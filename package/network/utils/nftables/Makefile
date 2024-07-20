@@ -38,7 +38,7 @@ define Package/nftables/Default
   CATEGORY:=Network
   SUBMENU:=Firewall
   TITLE:=nftables userspace utility
-  DEPENDS:=+kmod-nft-core +libnftnl
+  DEPENDS:=+libnftnl
   URL:=http://netfilter.org/projects/nftables/
   PROVIDES:=nftables
 endef

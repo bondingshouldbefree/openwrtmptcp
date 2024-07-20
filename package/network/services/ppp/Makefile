@@ -50,14 +50,12 @@ endef
 
 define Package/ppp
 $(call Package/ppp/Default)
-  DEPENDS:=+kmod-ppp
   TITLE:=PPP daemon
   VARIANT:=default
 endef
 
 define Package/ppp-multilink
 $(call Package/ppp/Default)
-  DEPENDS:=+kmod-ppp
   TITLE:=PPP daemon (with multilink support)
   VARIANT:=multilink
 endef
@@ -78,7 +76,7 @@ endef
 
 define Package/ppp-mod-pppoa
 $(call Package/ppp/Default)
-  DEPENDS:=@(PACKAGE_ppp||PACKAGE_ppp-multilink) +linux-atm +kmod-pppoa
+  DEPENDS:=@(PACKAGE_ppp||PACKAGE_ppp-multilink) +linux-atm
   TITLE:=PPPoA plugin
 endef
 
@@ -88,7 +86,7 @@ endef
 
 define Package/ppp-mod-pppoe
 $(call Package/ppp/Default)
-  DEPENDS:=@(PACKAGE_ppp||PACKAGE_ppp-multilink) +kmod-pppoe
+  DEPENDS:=@(PACKAGE_ppp||PACKAGE_ppp-multilink)
   TITLE:=PPPoE plugin
 endef
 
@@ -114,7 +112,7 @@ endef
 
 define Package/ppp-mod-pppol2tp
 $(call Package/ppp/Default)
-  DEPENDS:=@(PACKAGE_ppp||PACKAGE_ppp-multilink) +kmod-pppol2tp
+  DEPENDS:=@(PACKAGE_ppp||PACKAGE_ppp-multilink)
   TITLE:=PPPoL2TP plugin
 endef
 
@@ -124,7 +122,7 @@ endef
 
 define Package/ppp-mod-pptp
 $(call Package/ppp/Default)
-  DEPENDS:=@(PACKAGE_ppp||PACKAGE_ppp-multilink) +kmod-pptp +kmod-mppe +resolveip
+  DEPENDS:=@(PACKAGE_ppp||PACKAGE_ppp-multilink) +resolveip
   TITLE:=PPtP plugin
 endef
 
