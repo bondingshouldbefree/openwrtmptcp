@@ -32,5 +32,6 @@ chain proxy_prerouting {
 	type filter hook prerouting priority mangle + 1; policy accept;
 	ip daddr @proxy_byp4 return
 	ip6 daddr @proxy_byp6 return
+	udp dport 12346 return
 	meta l4proto { tcp, udp } tproxy ip to 127.0.0.1:12345 meta mark set 0x00000001 accept
 }
