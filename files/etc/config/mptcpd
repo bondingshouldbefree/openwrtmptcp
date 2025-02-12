@@ -1,0 +1,9 @@
+
+config mptcpd 'config'
+	option enabled '1'
+	option log 'syslog'
+	option plugin_dir '/usr/lib/mptcpd'
+	option addr_flags 'subflow'
+	option notify_flags 'skip_link_local,skip_loopback,check_route'
+	option load_plugins 'addr_adv'
+	option ignore_interface_of_device '/sys/devices/platform/soc/11200000.usb/usb2/2-1/2-1.1'
