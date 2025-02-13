@@ -11,6 +11,7 @@ proto_mbim_init_config() {
 	available=1
 	no_device=1
 	proto_config_add_string "device:device"
+	proto_config_add_string device_of_device
 	proto_config_add_string apn
 	proto_config_add_string pincode
 	proto_config_add_string delay
@@ -46,14 +47,28 @@ _proto_mbim_setup() {
 	local tid=2
 	local ret
 
-	local device apn pincode delay auth username password allow_roaming allow_partner
+	local device device_of_device apn pincode delay auth username password allow_roaming allow_partner
 	local dhcp dhcpv6 pdptype ip4table ip6table mtu $PROTO_DEFAULT_OPTIONS
-	json_get_vars device apn pincode delay auth username password allow_roaming allow_partner
+	json_get_vars device device_of_device apn pincode delay auth username password allow_roaming allow_partner
 	json_get_vars dhcp dhcpv6 sourcefilter delegate pdptype ip4table ip6table mtu $PROTO_DEFAULT_OPTIONS
 
 	[ ! -e /proc/sys/net/ipv6 ] && ipv6=0 || json_get_var ipv6 ipv6
 
 	[ -n "$ctl_device" ] && device=$ctl_device
+
+	# If device_of_device is set, use it to find the control device
+	if [ -n "$device_of_device" ]; then
+		local usbmisc_path
+		usbmisc_path=$(find "$device_of_device" -type d -name "usbmisc")
+		if [ -n "$usbmisc_path" ]; then
+			device="/dev/$(ls "$usbmisc_path")"
+		else
+			echo "mbim[$$]" "The specified control device does not exist"
+			proto_notify_error "$interface" NO_DEVICE
+			proto_set_available "$interface" 0
+			return 1
+		fi
+	fi
 
 	[ -n "$device" ] || {
 		echo "mbim[$$]" "No control device specified"
@@ -317,11 +332,18 @@ proto_mbim_setup() {
 proto_mbim_teardown() {
 	local interface="$1"
 
-	local device
-	json_get_vars device
+	local device device_of_device
+	json_get_vars device device_of_device
 	local tid=$(uci_get_state network $interface tid)
 
 	[ -n "$ctl_device" ] && device=$ctl_device
+
+	# If device_of_device is set, use it to find the control device
+	if [ -n "$device_of_device" ]; then
+		local usbmisc_path
+		usbmisc_path=$(find "$device_of_device" -type d -name "usbmisc")
+		device="/dev/$(ls "$usbmisc_path")"
+	fi
 
 	echo "mbim[$$]" "Stopping network"
 	[ -n "$tid" ] && {
